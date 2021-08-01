@@ -95,16 +95,16 @@ def tabluar_results(value):
     Input(component_id='table', component_property='columns')
 ])
 def update_figure(data, columns):
-    # Bar colors ["male", "female"]
-    colors = ['dodgerblue', 'lightcoral']
-
     # Bar Chart
     fig = px.bar(data,
                  x="Probability",
                  y="Name",
                  color='Gender',
                  orientation='h',
-                 color_discrete_sequence=colors)
+                 color_discrete_map={
+                     'M': 'dodgerblue',
+                     'F': 'lightcoral'
+                 })
     return fig
 
 

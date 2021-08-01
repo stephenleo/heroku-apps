@@ -7,7 +7,7 @@
     ```
 - Create a new heroku app for app in the mono-repo
     ```
-    heroku create -a <app>
+    heroku create -a <app> --remote <app>
     ```
 - Add the following buildpacks:
     ```
