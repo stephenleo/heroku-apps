@@ -1,26 +1,40 @@
 # name-gender
 
-Mono-repo deployment
-- Follow documentation from here: 
-    1. https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-multi-procfile
-    2. https://elements.heroku.com/buildpacks/lstoll/heroku-buildpack-monorepo
-
+## Deploying apps from a mono-repo on Heroku
+- Check current heroku apps
+    ```
+    heroku apps
+    ```
+- Create a new heroku app for app in the mono-repo
+    ```
+    heroku create -a <app>
+    ```
 - Add the following buildpacks:
     ```
     heroku buildpacks:add -a <app> https://github.com/lstoll/heroku-buildpack-monorepo -i 1
-
+    heroku buildpacks:add -a <app> heroku/python
     ```
-- Add the following 
+- Add the following configs
     ```
-    APP_BASE=relative/path/to/app/root
-
+    heroku config:set -a <app> PROCFILE=relative/path/to/app/Procfile
+    heroku config:set -a <app> APP_BASE=relative/path/to/app
     ```
-- Push each app
+- Test locally
+    ```
+    heroku local web
+    ```
+- Push each app to heroku
     ```
     git push git@heroku.com:<app> main
     ```
-- Add python buildpack: `heroku buildpacks:add -a name-gender-backend heroku/python`
-- Test locally: `heroku local web`
-- Deploy: 
-- For each git push, push to the heroku remote which was changed first. if it works then push to github
-- check logs: `heroku logs --tail`
+- Check logs
+    ```
+    heroku logs --tail
+    ```
+- If everything works fine push to github
+    ```
+    git push origin main
+    ```
+- References:
+    1. https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-multi-procfile
+    2. https://elements.heroku.com/buildpacks/lstoll/heroku-buildpack-monorepo
