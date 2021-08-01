@@ -46,9 +46,9 @@ class CustomOpTfPredictor:
 
         return [
             {
-                "name": instances[idx],
-                "gender": gender.decode("utf-8"), 
-                "probability": class_probability[idx]
+                "Name": instances[idx],
+                "Gender": gender.decode("utf-8"), 
+                "Probability": class_probability[idx].round(2)
             } for idx, gender in enumerate(predicted_classes)
         ]
     
