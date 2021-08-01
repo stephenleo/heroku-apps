@@ -80,10 +80,6 @@ def tabluar_results(value):
     # Convert values to Dataframe
     results_df = pd.DataFrame(value)
 
-    # Uppercase the first letter of each column
-    # TODO: Move this to the API
-    results_df.columns = [col.title() for col in results_df.columns]
-
     # Return the data and columns for datatable display
     columns = [{'name': col, 'id': col} for col in results_df.columns]
     data = results_df.to_dict(orient='records')
