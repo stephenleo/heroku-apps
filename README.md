@@ -23,17 +23,17 @@
     ```
     heroku local web
     ```
+- If everything works fine push to github
+    ```
+    git push origin main
+    ```
 - Push each app to heroku
     ```
-    git push git@heroku.com:<app> main
+    git push https://git.heroku.com/<app>.git HEAD:main
     ```
 - Check logs
     ```
     heroku logs --tail
-    ```
-- If everything works fine push to github
-    ```
-    git push origin main
     ```
 - References:
     1. https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-multi-procfile
