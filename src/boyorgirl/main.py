@@ -22,7 +22,7 @@ server = app.server
 # App Layout
 app.layout = html.Table([
     html.Tr([
-        html.H2(html.B('Boy or Girl?')),
+        html.H2(html.Center(html.B('Boy or Girl?'))),
         html.Div(
             dcc.Input(id='names',
                       placeholder='Enter names separated by space or comma',
@@ -53,7 +53,7 @@ app.layout = html.Table([
 # Callbacks
 @app.callback(
     [Output('predictions', 'children'),
-     Output('selected-names', 'children')], Input('submit-button', 'n_clicks'),
+     Output('selected-names', 'data')], Input('submit-button', 'n_clicks'),
     State('names', 'value'))
 def predict(n_clicks, value):
     # Split on all non-alphabet characters
@@ -101,7 +101,7 @@ def predict(n_clicks, value):
 @app.callback(
     Output('bar-plot', 'children'),
     [Input('predictions', 'children'),
-     Input('selected-names', 'children')])
+     Input('selected-names', 'data')])
 def bar_plot(data, selected_names):
     # Bar Chart
     data = pd.DataFrame(data[0]['props']['data'])
