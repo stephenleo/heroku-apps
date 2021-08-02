@@ -22,7 +22,7 @@ server = app.server
 # App Layout
 app.layout = html.Table([
     html.Tr([
-        html.H2(html.B('Boy or Girl?')),
+        html.H2(html.Center(html.B('Boy or Girl?'))),
         html.Div(
             dcc.Input(id='names',
                       placeholder='Enter names separated by space or comma',
@@ -131,4 +131,4 @@ def bar_plot(data, selected_names):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
