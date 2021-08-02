@@ -22,7 +22,7 @@ class CustomOpTfPredictor:
         # Predictions are output from sigmoid so float32 in range 0 -> 1
         # Round to integers for predicted class and string lookup for class name
         prediction_integers = tf.cast(tf.math.round(predictions), tf.int32) 
-        predicted_classes = tf.map_fn(lambda idx: class_names[idx], prediction_integers, dtype=tf.string)
+        predicted_classes = tf.map_fn(lambda idx: class_names[idx], prediction_integers, dtype=tf.string).numpy().tolist()
 
         # Convert sigmoid output for probability
         # 1 (male) will remain at logit output
@@ -32,10 +32,7 @@ class CustomOpTfPredictor:
                 return 1.0 - logit
             else:
                 return logit
-        class_probability = tf.map_fn(to_probability, predictions, dtype=tf.float32)
-        
-        predicted_classes = predicted_classes.numpy().tolist()
-        class_probability = class_probability.numpy().tolist()
+        class_probability = tf.map_fn(to_probability, predictions, dtype=tf.float32).numpy().tolist()
 
         return [
             {
