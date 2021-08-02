@@ -9,6 +9,10 @@
     ```
     heroku create -a <app> --remote <app>
     ```
+    - To update an existing app with a remote
+        ```
+        heroku git:remote -a <app> -r <app>
+        ```
 - Add the following buildpacks:
     ```
     heroku buildpacks:add -a <app> https://github.com/lstoll/heroku-buildpack-monorepo -i 1
