@@ -26,7 +26,6 @@ app.layout = html.Table([
         html.Div(
             dcc.Input(id='names',
                       placeholder='Enter names separated by space or comma',
-                      value='Joe Biden, Kamala Harris',
                       style={
                           'width': '500px',
                           'font-size': '14px'
@@ -38,10 +37,18 @@ app.layout = html.Table([
                         n_clicks=0,
                         style={'font-size': '14px'})),
         html.Br(),
-        html.Div(id='predictions', children=[], style={'width': '500px'}),
+        dcc.Loading(
+            id='table-loading',
+            type='default',
+            children=html.Div(id='predictions', children=[], style={'width': '500px'})
+        ),
         dcc.Store(id='selected-names'),
         html.Br(),
-        html.Div(id='bar-plot', children=[])
+        dcc.Loading(
+            id='chart-loading',
+            type='default',
+            children=html.Div(id='bar-plot', children=[])
+        )
     ])
 ],
                         style={
