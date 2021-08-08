@@ -17,6 +17,30 @@ pred_model = Model(model_dir)
 # Setup the Dash App
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+# Google Adsense
+app.index_string = """
+<!DOCTYPE html>
+<html>
+    <head>
+        {%metas%}
+        <title>{%title%}</title>
+        <script data-ad-client="ca-pub-3660120286814600" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        {%favicon%}
+        {%css%}
+    </head>
+    <body>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+    </body>
+</html>
+"""
+
+# Server
 server = app.server
 
 # App Layout
