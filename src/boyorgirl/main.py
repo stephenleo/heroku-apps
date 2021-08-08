@@ -158,7 +158,7 @@ def bar_plot(data, selected_names):
                       xaxis={'range': [0, 1]},
                       width=500)
 
-    return html.Div(children=[dcc.Graph(figure=fig)])
+    return [dcc.Graph(figure=fig)]
 
 
 if __name__ == '__main__':
