@@ -17,7 +17,7 @@ class CustomOpTfPredictor:
         predictions = tf.map_fn(lambda pred: tf.squeeze(pred), predictions)
 
         # Classes
-        class_names = tf.constant(["F", "M"], dtype=tf.string)
+        class_names = tf.constant(["Girl", "Boy"], dtype=tf.string)
 
         # Predictions are output from sigmoid so float32 in range 0 -> 1
         # Round to integers for predicted class and string lookup for class name
@@ -37,7 +37,7 @@ class CustomOpTfPredictor:
         return [
             {
                 "Name": instances[idx],
-                "Gender": gender.decode("utf-8"), 
+                "Boy or Girl?": gender.decode("utf-8"), 
                 "Probability": round(class_probability[idx], 2)
             } for idx, gender in enumerate(predicted_classes)
         ]

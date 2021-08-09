@@ -6,6 +6,7 @@ import plotly.express as px
 
 import dash
 import dash_table
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
@@ -15,7 +16,8 @@ model_dir = 'models/1'
 pred_model = Model(model_dir)
 
 # Setup the Dash App
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = [dbc.themes.LITERA
+                        ]  #'https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 # Google Adsense
@@ -46,33 +48,27 @@ server = app.server
 # App Layout
 app.layout = html.Table([
     html.Tr([
-        html.H2(html.Center(html.B('Boy or Girl?'))),
+        html.H1(html.Center(html.B('Boy or Girl?'))),
+        html.Br(),
         html.Div(
-            dcc.Input(id='names',
+            dbc.Input(id='names',
                       placeholder='Enter names separated by space or comma',
-                      style={
-                          'width': '500px',
-                          'font-size': '14px'
-                      })),
+                      style={'width': '700px'})),
         html.Br(),
         html.Center(
-            html.Button('Submit',
-                        id='submit-button',
-                        n_clicks=0,
-                        style={'font-size': '14px'})),
+            dbc.Button(
+                'Submit', id='submit-button', n_clicks=0, color='primary')),
         html.Br(),
-        dcc.Loading(
-            id='table-loading',
-            type='default',
-            children=html.Div(id='predictions', children=[], style={'width': '500px'})
-        ),
+        dcc.Loading(id='table-loading',
+                    type='default',
+                    children=html.Div(id='predictions',
+                                      children=[],
+                                      style={'width': '700px'})),
         dcc.Store(id='selected-names'),
         html.Br(),
-        dcc.Loading(
-            id='chart-loading',
-            type='default',
-            children=html.Div(id='bar-plot', children=[])
-        )
+        dcc.Loading(id='chart-loading',
+                    type='default',
+                    children=html.Div(id='bar-plot', children=[]))
     ])
 ],
                         style={
@@ -111,20 +107,19 @@ def predict(n_clicks, value):
             page_current=0,  # page number that user is on
             page_size=10,  # number of rows visible per page
             style_cell={
+                'fontFamily': 'Open Sans',
                 'textAlign': 'center',
                 'padding': '10px',
                 'backgroundColor': 'rgb(255, 255, 204)',
                 'height': 'auto',
-                'font-size': '14px',
-                'width': '100px',
-                'minWidth': '100px',
-                'maxWidth': '100px'
+                'font-size': '16px'
             },
             style_header={
                 'backgroundColor': 'rgb(0, 0, 255)',
                 'color': 'white',
                 'textAlign': 'center'
             },
+            export_format='csv'
         )
     ], names
 
@@ -139,11 +134,11 @@ def bar_plot(data, selected_names):
     fig = px.bar(data,
                  x="Probability",
                  y="Name",
-                 color='Gender',
+                 color='Boy or Girl?',
                  orientation='h',
                  color_discrete_map={
-                     'M': 'dodgerblue',
-                     'F': 'lightcoral'
+                     'Boy': 'dodgerblue',
+                     'Girl': 'lightcoral'
                  })
 
     fig.update_layout(title={
@@ -156,10 +151,11 @@ def bar_plot(data, selected_names):
                           'autorange': 'reversed',
                       },
                       xaxis={'range': [0, 1]},
-                      width=500)
+                      font = {'size': 14},
+                      width=700)
 
     return [dcc.Graph(figure=fig)]
 
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
