@@ -51,7 +51,7 @@ app.layout = html.Table([
         html.H1(html.Center(html.B('Boy or Girl?'))),
         html.Br(),
         html.Div(
-            dbc.Input(id='names',
+            dbc.Input(id='names', value='Joe Biden, Kamala Harris',
                       placeholder='Enter names separated by space or comma',
                       style={'width': '700px'})),
         html.Br(),
