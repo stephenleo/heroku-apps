@@ -1,4 +1,12 @@
-# name-gender
+# Heroku Apps
+- A mono-repo with all my heroku deployments. 
+- Each deployment is a directory within `src/`
+
+## Deployments
+| Name                                 | Description                                         |
+|--------------------------------------|-----------------------------------------------------|
+| [BoyOrGirl]( https://boyorgirl.xyz ) | Check if your names are Boy's names or Girl's names |
+
 
 ## Deploying apps from a mono-repo on Heroku
 - Check current heroku apps
