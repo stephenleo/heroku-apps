@@ -11,7 +11,7 @@ def lstm_model(num_alphabets=27, name_length=50, embedding_dim=256):
     ])
 
     model.compile(loss='binary_crossentropy',
-                  optimizer=Adam(learning_rate=0.01),
+                  optimizer=Adam(learning_rate=0.001),
                   metrics=['accuracy'])
 
     return model

@@ -42,7 +42,7 @@ if __name__ == '__main__':
     callbacks = [
         EarlyStopping(monitor='val_accuracy',
                       min_delta=1e-3,
-                      patience=3,
+                      patience=5,
                       mode='max',
                       restore_best_weights=True,
                       verbose=1),
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     history = model.fit(x=X_train,
                         y=y_train,
-                        batch_size=32,
+                        batch_size=64,
                         epochs=50,
                         validation_data=(X_test, y_test),
                         callbacks=callbacks)
