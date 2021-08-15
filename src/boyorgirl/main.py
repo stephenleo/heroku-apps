@@ -1,9 +1,10 @@
-from model import CustomOpTfPredictor as Model
-
-import re
+import os
 import pandas as pd
-import plotly.express as px
+import numpy as np
+import re
+from tensorflow.keras.models import load_model
 
+import plotly.express as px
 import dash
 import dash_table
 import dash_bootstrap_components as dbc
@@ -11,36 +12,15 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
-# Load the Model
-model_dir = 'models/1'
-pred_model = Model(model_dir)
+from utils.preprocess import preprocess
+
+# Load the model
+model_path = os.path.join(os.path.dirname(__file__), 'models/boyorgirl.h5')
+pred_model = load_model(model_path)
 
 # Setup the Dash App
-external_stylesheets = [dbc.themes.LITERA
-                        ]  #'https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = [dbc.themes.LITERA]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-# Google Adsense
-app.index_string = """
-<!DOCTYPE html>
-<html>
-    <head>
-        {%metas%}
-        <title>{%title%}</title>
-        <script data-ad-client="ca-pub-3660120286814600" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        {%favicon%}
-        {%css%}
-    </head>
-    <body>
-        {%app_entry%}
-        <footer>
-            {%config%}
-            {%scripts%}
-            {%renderer%}
-        </footer>
-    </body>
-</html>
-"""
 
 # Server
 server = app.server
@@ -87,9 +67,8 @@ app.layout = html.Table([
                     type='default',
                     children=html.Div(id='bar-plot', children=[])),
         html.Br(),
-        html.Div(
-            html.Center(html.B('About "Boy or Girl?"')),
-            style={'fontSize': 20}),
+        html.Div(html.Center(html.B('About "Boy or Girl?"')),
+                 style={'fontSize': 20}),
         dcc.Markdown(faq, style={'width': '700px'})
     ])
 ],
@@ -97,7 +76,6 @@ app.layout = html.Table([
                             'marginLeft': 'auto',
                             'marginRight': 'auto'
                         })
-
 
 
 # Callbacks
@@ -123,8 +101,27 @@ def predict(n_clicks, value):
         # Restrict to first 10 names only
         names = names[:10]
 
+        # Convert to dataframe
+        pred_df = pd.DataFrame({'name': names})
+
+        # Preprocess
+        pred_df = preprocess(pred_df, train=False)
+
         # Predictions
-        pred_df = pd.DataFrame(pred_model.predict(names)).drop_duplicates()
+        result = pred_model.predict(np.asarray(
+            pred_df['name'].values.tolist())).squeeze(axis=1)
+        pred_df['Boy or Girl?'] = [
+            'Boy' if logit > 0.5 else 'Girl' for logit in result
+        ]
+        pred_df['Probability'] = [
+            logit if logit > 0.5 else 1.0 - logit for logit in result
+        ]
+
+        # Format the output
+        pred_df['name'] = names
+        pred_df.rename(columns={'name': 'Name'}, inplace=True)
+        pred_df = pred_df.round(2)
+        pred_df.drop_duplicates(inplace=True)
 
         return [
             dash_table.DataTable(
