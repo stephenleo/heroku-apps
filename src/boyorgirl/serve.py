@@ -120,7 +120,7 @@ def predict(n_clicks, value):
         # Format the output
         pred_df['name'] = names
         pred_df.rename(columns={'name': 'Name'}, inplace=True)
-        pred_df = pred_df.round(2)
+        pred_df['Probability'] = pred_df['Probability'].round(2)
         pred_df.drop_duplicates(inplace=True)
 
         return [
