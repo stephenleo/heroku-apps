@@ -194,4 +194,4 @@ def bar_plot(n_clicks, data, selected_names):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
