@@ -35,10 +35,7 @@ class CustomOpTfPredictor:
         # 1 (male) will remain at logit output
         # 0 (female) will be 1.0 - logit to give probability
         def to_probability(logit):
-            if logit < 0.5:
-                return 1.0 - logit
-            else:
-                return logit
+            return 1.0 - logit if logit < 0.5 else logit
         class_probability = tf.map_fn(to_probability, predictions, dtype=tf.float32)
         
         predicted_classes = predicted_classes.numpy().tolist()
@@ -56,9 +53,9 @@ class CustomOpTfPredictor:
     def to_tensor_format(self, input_names):
         # Convert name to number
         input_name = tf.constant(input_names)
-        x_processed = tf.map_fn(lambda name: self.x_preprocess([name]), input_name, dtype=tf.float32)
-
-        return x_processed
+        return tf.map_fn(
+            lambda name: self.x_preprocess([name]), input_name, dtype=tf.float32
+        )
 
     def dynamic_padding(self, inp, min_size):
         """Pad after the name with spaces to make all names min_size long"""

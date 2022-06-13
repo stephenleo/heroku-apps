@@ -83,10 +83,7 @@ app.layout = html.Table([
                Output('names', 'value')], Input('reset-button', 'n_clicks'),
               State('names', 'value'))
 def update(n_clicks, value):
-    if n_clicks is not None and n_clicks > 0:
-        return -1, ''
-    else:
-        return 0, value
+    return (-1, '') if n_clicks is not None and n_clicks > 0 else (0, value)
 
 
 @app.callback(
@@ -94,66 +91,65 @@ def update(n_clicks, value):
      Output('selected-names', 'data')], Input('submit-button', 'n_clicks'),
     State('names', 'value'))
 def predict(n_clicks, value):
-    if n_clicks >= 0:
-        # Split on all non-alphabet characters
-        names = re.findall(r"\w+", value)
-
-        # Restrict to first 10 names only
-        names = names[:10]
-
-        # Convert to dataframe
-        pred_df = pd.DataFrame({'name': names})
-
-        # Preprocess
-        pred_df = preprocess(pred_df, train=False)
-
-        # Predictions
-        result = pred_model.predict(np.asarray(
-            pred_df['name'].values.tolist())).squeeze(axis=1)
-        pred_df['Boy or Girl?'] = [
-            'Boy' if logit > 0.5 else 'Girl' for logit in result
-        ]
-        pred_df['Probability'] = [
-            logit if logit > 0.5 else 1.0 - logit for logit in result
-        ]
-
-        # Format the output
-        pred_df['name'] = names
-        pred_df.rename(columns={'name': 'Name'}, inplace=True)
-        pred_df['Probability'] = pred_df['Probability'].round(2)
-        pred_df.drop_duplicates(inplace=True)
-
-        return [
-            dash_table.DataTable(
-                id='pred-table',
-                columns=[{
-                    'name': col,
-                    'id': col,
-                } for col in pred_df.columns],
-                data=pred_df.to_dict('records'),
-                filter_action="native",
-                filter_options={"case": "insensitive"},
-                sort_action="native",  # give user capability to sort columns
-                sort_mode="single",  # sort across 'multi' or 'single' columns
-                page_current=0,  # page number that user is on
-                page_size=10,  # number of rows visible per page
-                style_cell={
-                    'fontFamily': 'Open Sans',
-                    'textAlign': 'center',
-                    'padding': '10px',
-                    'backgroundColor': 'rgb(255, 255, 204)',
-                    'height': 'auto',
-                    'font-size': '16px'
-                },
-                style_header={
-                    'backgroundColor': 'rgb(128, 128, 128)',
-                    'color': 'white',
-                    'textAlign': 'center'
-                },
-                export_format='csv')
-        ], names
-    else:
+    if n_clicks < 0:
         return [], ''
+    # Split on all non-alphabet characters
+    names = re.findall(r"\w+", value)
+
+    # Restrict to first 10 names only
+    names = names[:10]
+
+    # Convert to dataframe
+    pred_df = pd.DataFrame({'name': names})
+
+    # Preprocess
+    pred_df = preprocess(pred_df, train=False)
+
+    # Predictions
+    result = pred_model.predict(np.asarray(
+        pred_df['name'].values.tolist())).squeeze(axis=1)
+    pred_df['Boy or Girl?'] = [
+        'Boy' if logit > 0.5 else 'Girl' for logit in result
+    ]
+    pred_df['Probability'] = [
+        logit if logit > 0.5 else 1.0 - logit for logit in result
+    ]
+
+    # Format the output
+    pred_df['name'] = names
+    pred_df.rename(columns={'name': 'Name'}, inplace=True)
+    pred_df['Probability'] = pred_df['Probability'].round(2)
+    pred_df.drop_duplicates(inplace=True)
+
+    return [
+        dash_table.DataTable(
+            id='pred-table',
+            columns=[{
+                'name': col,
+                'id': col,
+            } for col in pred_df.columns],
+            data=pred_df.to_dict('records'),
+            filter_action="native",
+            filter_options={"case": "insensitive"},
+            sort_action="native",  # give user capability to sort columns
+            sort_mode="single",  # sort across 'multi' or 'single' columns
+            page_current=0,  # page number that user is on
+            page_size=10,  # number of rows visible per page
+            style_cell={
+                'fontFamily': 'Open Sans',
+                'textAlign': 'center',
+                'padding': '10px',
+                'backgroundColor': 'rgb(255, 255, 204)',
+                'height': 'auto',
+                'font-size': '16px'
+            },
+            style_header={
+                'backgroundColor': 'rgb(128, 128, 128)',
+                'color': 'white',
+                'textAlign': 'center'
+            },
+            export_format='csv')
+    ], names
 
 
 @app.callback(Output('bar-plot', 'children'), [
